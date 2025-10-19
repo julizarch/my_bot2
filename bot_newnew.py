@@ -213,5 +213,29 @@ def main():
     logger.info("Бот запущен...")
     app.run_polling()
 
+    from flask import Flask
+import threading
+
+# Web-сервер для Render
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "🤖 Бот работает!"
+
+@app.route('/healthz')
+def health_check():
+    return "OK", 200
+
+def run_web():
+    app.run(host='0.0.0.0', port=5000, debug=False)
+
+# Запускаем web-сервер в фоне
+web_thread = threading.Thread(target=run_web)
+web_thread.daemon = True
+web_thread.start()
+
+print("🌐 Web-сервер запущен на порту 5000")
+
 if __name__ == "__main__":
     main()
